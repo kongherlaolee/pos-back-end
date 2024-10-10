@@ -170,6 +170,22 @@ app.get('/api/products', (req, res) => {
     });
 });
 
+
+// Route: Get a product by code
+app.get('/api/products/:code', (req, res) => {
+    const { code } = req.params;
+    const sql = 'SELECT * FROM products WHERE code = ?';
+    db.query(sql, [code], (error, results) => {
+        if (error) {
+            return res.status(500).json({ error: error.message });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.json(results[0]);
+    });
+});
+
 // Route: Get a product by ID
 app.get('/api/products/:id', (req, res) => {
     const { id } = req.params;
@@ -229,6 +245,7 @@ app.delete('/api/products/:id', (req, res) => {
         res.json({ message: 'Product deleted successfully' });
     });
 });
+
 
 // Start the server
 const PORT = process.env.PORT || 5000;
